@@ -8,7 +8,7 @@
 #import <react/renderer/components/RNLinearGradientSpec/Props.h>
 #import <react/renderer/components/RNLinearGradientSpec/RCTComponentViewHelpers.h>
 
-#import "RCTFabricComponentsPlugins.h"
+#import <React/RCTFabricComponentsPlugins.h>
 #endif
 
 #import <React/RCTConvert.h>
@@ -34,7 +34,11 @@ using namespace facebook::react;
 
 - (RNLinearGradientLayer *)gradientLayer
 {
-  return (RNLinearGradientLayer *)self.layer;
+  #ifdef RCT_NEW_ARCH_ENABLED
+  return [RNLinearGradientLayerNewArch class];
+  #else
+  return [RNLinearGradientLayer class];
+  #endif
 }
 
 - (NSArray *)colors
@@ -141,6 +145,15 @@ using namespace facebook::react;
     const auto &oldViewProps = *std::static_pointer_cast<RNLinearGradientProps const>(_props);
     const auto &newViewProps = *std::static_pointer_cast<RNLinearGradientProps const>(props);
 
+    if (newViewProps.yogaStyle.overflow() != oldViewProps.yogaStyle.overflow()) {
+        // 0 for visible, 1 for hidden
+        if ((int)newViewProps.yogaStyle.overflow() == 0) {
+            self.layer.masksToBounds = false;
+        } else {
+            self.layer.masksToBounds = true;
+        }
+    }
+
     if(oldViewProps.startPoint.x != newViewProps.startPoint.x || oldViewProps.startPoint.y != newViewProps.startPoint.y) {
         self.startPoint = CGPointMake(newViewProps.startPoint.x, newViewProps.startPoint.y);
     }
@@ -161,13 +174,15 @@ using namespace facebook::react;
         self.angleCenter = CGPointMake(newViewProps.angleCenter.x, newViewProps.angleCenter.y);
     }
 
-    NSArray<NSNumber *> *locations = convertCxxVectorNumberToNsArrayNumber(newViewProps.locations);
-    self.locations = locations;
+    if (oldViewProps.locations != newViewProps.locations) {
+        NSArray<NSNumber *> *locations = convertCxxVectorNumberToNsArrayNumber(newViewProps.locations);
+        self.locations = locations;
+    }
 
-    // We cannot compare SharedColor because it is shared value.
-    // We could compare color value, but it is more performant to just assign new value
-    NSArray<UIColor *> *colors = convertCxxVectorColorsToNSArrayColors(newViewProps.colors);
-    self.colors = colors;
+    if (oldViewProps.colors != newViewProps.colors) {
+        NSArray<UIColor *> *colors = convertCxxVectorColorsToNSArrayColors(newViewProps.colors);
+        self.colors = colors;
+    }
 
     [super updateProps:props oldProps:oldProps];
 }
