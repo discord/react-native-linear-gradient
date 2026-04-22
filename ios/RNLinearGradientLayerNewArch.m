@@ -193,9 +193,6 @@
         // to (x', y') on the rotated axes; we need both |x'| and |y'|
         // ≤ layerSize/2. Taking the max over all four corners of
         // max(|x'|, |y'|) and doubling gives the tight square size.
-        // This is tighter than 2·√(x'² + y'²) (the distance bound) by
-        // up to ~3% linear at 45°; exact at axis angles. The +2 is
-        // slack for sub-pixel round-off at exact-fit angles.
         CGFloat acx = acxNorm * W;
         CGFloat acy = acyNorm * H;
         CGFloat cosA = cos(bearingRad);
