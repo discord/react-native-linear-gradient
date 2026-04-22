@@ -56,7 +56,7 @@ export default class LinearGradient extends Component<Props> {
         {...otherProps}
         startPoint={convertPoint('start', start)}
         endPoint={convertPoint('end', end)}
-        colors={colors.map(processColor)}
+        colors={global.RN$Bridgeless ? colors : colors.map(processColor)}
         locations={locations ? locations.slice(0, colors.length) : null}
         useAngle={useAngle}
         angleCenter={convertPoint('angleCenter', angleCenter)}
