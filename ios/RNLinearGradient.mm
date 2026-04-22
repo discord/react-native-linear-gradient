@@ -154,15 +154,6 @@ using namespace facebook::react;
     const auto &oldViewProps = *std::static_pointer_cast<RNLinearGradientProps const>(_props);
     const auto &newViewProps = *std::static_pointer_cast<RNLinearGradientProps const>(props);
 
-    if (newViewProps.yogaStyle.overflow() != oldViewProps.yogaStyle.overflow()) {
-        // 0 for visible, 1 for hidden
-        if ((int)newViewProps.yogaStyle.overflow() == 0) {
-            self.layer.masksToBounds = false;
-        } else {
-            self.layer.masksToBounds = true;
-        }
-    }
-
     if(oldViewProps.startPoint.x != newViewProps.startPoint.x || oldViewProps.startPoint.y != newViewProps.startPoint.y) {
         self.startPoint = CGPointMake(newViewProps.startPoint.x, newViewProps.startPoint.y);
     }
