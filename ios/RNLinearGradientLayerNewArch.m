@@ -1,9 +1,9 @@
-#import "RNLinearGradientLayer.h"
+#import "RNLinearGradientLayerNewArch.h"
 
 #include <math.h>
 #import <UIKit/UIKit.h>
 
-@implementation RNLinearGradientLayer
+@implementation RNLinearGradientLayerNewArch
 {
     CALayer *_clipLayer;
     CAGradientLayer *_gradientLayer;

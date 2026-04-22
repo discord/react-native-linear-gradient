@@ -9,6 +9,8 @@
 #import <react/renderer/components/RNLinearGradientSpec/RCTComponentViewHelpers.h>
 
 #import <React/RCTFabricComponentsPlugins.h>
+
+#import "RNLinearGradientLayerNewArch.h"
 #endif
 
 #import <React/RCTConvert.h>
@@ -29,17 +31,24 @@ using namespace facebook::react;
 
 + (Class)layerClass
 {
+#ifdef RCT_NEW_ARCH_ENABLED
+  return [RNLinearGradientLayerNewArch class];
+#else
   return [RNLinearGradientLayer class];
+#endif
 }
 
+#ifdef RCT_NEW_ARCH_ENABLED
+- (RNLinearGradientLayerNewArch *)gradientLayer
+{
+  return (RNLinearGradientLayerNewArch *)self.layer;
+}
+#else
 - (RNLinearGradientLayer *)gradientLayer
 {
-  #ifdef RCT_NEW_ARCH_ENABLED
-  return [RNLinearGradientLayerNewArch class];
-  #else
-  return [RNLinearGradientLayer class];
-  #endif
+  return (RNLinearGradientLayer *)self.layer;
 }
+#endif
 
 - (NSArray *)colors
 {
