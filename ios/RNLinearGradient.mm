@@ -8,7 +8,9 @@
 #import <react/renderer/components/RNLinearGradientSpec/Props.h>
 #import <react/renderer/components/RNLinearGradientSpec/RCTComponentViewHelpers.h>
 
-#import "RCTFabricComponentsPlugins.h"
+#import <React/RCTFabricComponentsPlugins.h>
+
+#import "RNLinearGradientLayerNewArch.h"
 #endif
 
 #import <React/RCTConvert.h>
@@ -29,13 +31,24 @@ using namespace facebook::react;
 
 + (Class)layerClass
 {
+#ifdef RCT_NEW_ARCH_ENABLED
+  return [RNLinearGradientLayerNewArch class];
+#else
   return [RNLinearGradientLayer class];
+#endif
 }
 
+#ifdef RCT_NEW_ARCH_ENABLED
+- (RNLinearGradientLayerNewArch *)gradientLayer
+{
+  return (RNLinearGradientLayerNewArch *)self.layer;
+}
+#else
 - (RNLinearGradientLayer *)gradientLayer
 {
   return (RNLinearGradientLayer *)self.layer;
 }
+#endif
 
 - (NSArray *)colors
 {
@@ -161,13 +174,15 @@ using namespace facebook::react;
         self.angleCenter = CGPointMake(newViewProps.angleCenter.x, newViewProps.angleCenter.y);
     }
 
-    NSArray<NSNumber *> *locations = convertCxxVectorNumberToNsArrayNumber(newViewProps.locations);
-    self.locations = locations;
+    if (oldViewProps.locations != newViewProps.locations) {
+        NSArray<NSNumber *> *locations = convertCxxVectorNumberToNsArrayNumber(newViewProps.locations);
+        self.locations = locations;
+    }
 
-    // We cannot compare SharedColor because it is shared value.
-    // We could compare color value, but it is more performant to just assign new value
-    NSArray<UIColor *> *colors = convertCxxVectorColorsToNSArrayColors(newViewProps.colors);
-    self.colors = colors;
+    if (oldViewProps.colors != newViewProps.colors) {
+        NSArray<UIColor *> *colors = convertCxxVectorColorsToNSArrayColors(newViewProps.colors);
+        self.colors = colors;
+    }
 
     [super updateProps:props oldProps:oldProps];
 }
@@ -175,7 +190,6 @@ using namespace facebook::react;
 static NSArray<UIColor *> *convertCxxVectorColorsToNSArrayColors(const std::vector<facebook::react::SharedColor> &colors)
 {
     size_t size = colors.size();
-    NSLog(@"%zu", size);
     NSMutableArray *result = [NSMutableArray new];
     for(size_t i = 0; i < size; i++) {
         UIColor *color = RCTUIColorFromSharedColor(colors[i]);

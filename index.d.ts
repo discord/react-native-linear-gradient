@@ -12,7 +12,13 @@ declare module 'react-native-linear-gradient' {
     angle?: number;
   }
 
+  export interface LinearGradientNativeComponentProps extends Omit<LinearGradientProps, 'start' | 'end'>{
+    startPoint?: { x: number; y: number },
+    endPoint?: { x: number; y: number },
+  }
+
   export class LinearGradient extends React.Component<LinearGradientProps> {}
+  export class LinearGradientNativeComponent extends React.Component<LinearGradientProps> {}
 
   export default LinearGradient;
 }
