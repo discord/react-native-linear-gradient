@@ -139,6 +139,11 @@ using namespace facebook::react;
     return concreteComponentDescriptorProvider<RNLinearGradientComponentDescriptor>();
 }
 
++ (BOOL)shouldBeRecycled
+{
+    return NO;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame]) {
